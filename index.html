@@ -28,42 +28,19 @@
         <div class="logo">
           <plate><apple /></plate>
         </div>
-        <span class="share-menu">
-          Share
-          <a class="share-twitter" type="twitter" href="#"></a>
-          <a class="share-facebook" type="facebook" href="#"></a>
-          <a class="share-email" type="email" href="#"></a>
-        </span>
       </header>
 
       <h2 class="order"></h2>
 
       <div class="note">
-        <h3>No worries, you've got this!</h3>
-        <p>
-          You're about to learn CSS Selectors!
-          Selectors are how you pick which element to apply styles to.
-        </p>
-
-        <h4>Exhibit 1 - A CSS Rule</h4>
-
-        <pre>
-p {
-   margin-bottom: 12px;
-}</pre>
-
-        <p>
-          Here, the "p" is the selector (selects all &lt;p&gt; elements) and applies the margin-bottom style.
-        </p>
-        <p>
-          To play, type in a CSS selector in the editor below to select the correct items on the table.If you get it right, you'll advance to the next level.
-        </p>
-        <p>
-          Hover over the items on the table to see their HTML markup.
-        </p>
-        <p>
-          Get help with selectors on the right! &rarr;
-        </p>
+        <div class="display-help">
+          <h3 class="selector-name"></h3>
+          <h2 class="title"></h2>
+          <h3 class="syntax"></h3>
+          <div class="hint"></div>
+          <h4 class="examples-title">Examples</h4>
+          <div class="examples"></div>
+        </div>
         <a class="note-toggle" href="#">Ok, got it!</a>
       </div>
 
@@ -97,12 +74,12 @@ p {
             /* Styles would go here. */<br/>
             }
             </div>
-            <div class="help">
-              <br/>
-              /* <br/>
-              Type a number to skip to a level.<br/>
-              Ex &rarr; "5" for level 5 <br/>*/
-            </div>
+<!--            <div class="help">-->
+<!--              <br/>-->
+<!--              /* <br/>-->
+<!--              Type a number to skip to a level.<br/>-->
+<!--              Ex &rarr; "5" for level 5 <br/>*/-->
+<!--            </div>-->
           </div>
         </div>
 
@@ -118,70 +95,47 @@ p {
         </div>
       </div>
 
-      <div class="what-is-this">
-        <p>
-          Made by <a href="http://www.twitter.com/flukeout">@flukeout</a> &mdash; come say hi!
-        </p>
-        <p>
-          Have feedback or questions? Please file an issue on <a href="https://github.com/flukeout/css-diner/issues">the Github repo</a>.
-        </p>
-      </div>
-
       <div class="helper"><!-- This is the popup that floats over table elements --></div>
 
-    </div><!-- /left-col -->
+    </div>
 
-    <div class="right-col">
-
-      <div class="help-wrapper">
-
-        <h1 class="level-header">
-          <span class="level-text"></span>
-          <span class="checkmark"></span>
-        </h1>
-
-        <div class="level-nav">
-          <a class="previous" href="#"></a>
-          <a class="next" href="#"></a>
-        </div>
-
-        <div class="level-progress"><div class="progress"></div></div>
-
-        <div class="display-help">
-          <h3 class="selector-name"></h3>
-          <h2 class="title"></h2>
-          <h3 class="syntax"></h3>
-          <div class="hint"></div>
-          <h4 class="examples-title">Examples</h4>
-          <div class="examples"></div>
-        </div>
-      </div>
-
+    <div class="right-col menu-open">
+      <h1 class="level-header">
+        <span class="level-text"></span>
+        <span class="checkmark"></span>
+      </h1>
       <div class="level-menu">
-        <h2>Choose a level</h2>
-        <div class="levels"><!-- level links are inserted here--></div>
-        <a class="reset-progress" href="#">Reset Progress</a>
+        <div class="level-progress"><div class="progress"></div></div>
+        <div class="levels"></div>
+      </div>
+      <div>
+        <div class="check-code">
+          The clue is:
+          <div><span></span></div>
+        </div>
+        <a class="btn next">Next</a>
+        <a class="btn reset-progress" href="#">Reset Progress</a>
       </div>
 
-      <div class="level-menu-toggle-wrapper">
-        <div class="level-menu-toggle"></div>
-      </div>
+<!--      <div class="level-menu-toggle-wrapper">-->
+<!--        <div class="level-menu-toggle"></div>-->
+<!--      </div>-->
 
-    </div><!-- /right-col -->
+    </div>
 
-  <script>
-    if(location.hostname != "localhost"){
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+<!--  <script>-->
+<!--    if(location.hostname != "localhost"){-->
+<!--      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){-->
+<!--      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),-->
+<!--      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)-->
+<!--      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');-->
 
-      ga('create', 'UA-62998410-1', 'auto');
-      ga('send', 'pageview');
-    } else {
-      var ga = false;
-    }
-  </script>
+<!--      ga('create', 'UA-62998410-1', 'auto');-->
+<!--      ga('send', 'pageview');-->
+<!--    } else {-->
+<!--      var ga = false;-->
+<!--    }-->
+<!--  </script>-->
 
   </body>
 </html>

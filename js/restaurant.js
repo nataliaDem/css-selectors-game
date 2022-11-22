@@ -29,29 +29,6 @@ var progress = JSON.parse(localStorage.getItem("progress")) || blankProgress;
 
 $(document).ready(function(){
 
-  $(".share-menu").on("click","a",function(){
-
-    var type = $(this).attr("type");
-
-    if(type == "twitter"){
-      var url = "https://twitter.com/intent/tweet?text=Learning%20CSS?%20Try%20CSS%20Diner,%20the%20fun%20way%20to%20practice%20selectors%20%E2%86%92&hashtags=css,cssdiner,webdev&url=http%3A%2F%2Fcssdiner.com%2F&via=flukeout";
-    } else if (type == "facebook") {
-      var url = "https://www.facebook.com/sharer.php?src=sp&u=http%3A%2F%2Fcssdiner.com";
-    } else if (type == "email") {
-      var url = "mailto:?subject=Check+out+CSS+Diner&body=It's+a+fun+game+to+learn+%26+practice+CSS+selectors.%0D%0A%0D%0AYou+can+try+it+at+http://cssdiner.com";
-    }
-
-    PopupCenter(url, "title", 600, 450);
-    sendEvent("share", type, "");
-    return false;
-  });
-
-  $(window).on("keydown",function(e){
-    if(e.keyCode == 27) {
-      closeMenu();
-    }
-  });
-
   // Custom scrollbar plugin
   $(".left-col, .level-menu").mCustomScrollbar({
     scrollInertia: 0,
@@ -59,7 +36,7 @@ $(document).ready(function(){
   });
 
   $(".note-toggle").on("click", function(){
-    $(this).hide();
+    // $(this).hide();
     $(".note").slideToggle();
   });
 
@@ -80,7 +57,7 @@ $(document).ready(function(){
 
     addAnimation($(this),"link-jiggle");
 
-    if(direction == "next") {
+    if(direction === "next") {
       currentLevel++;
       if(currentLevel >= levels.length) {
         currentLevel = levels.length - 1;
@@ -100,12 +77,12 @@ $(document).ready(function(){
   $(".reset-progress").on("click",function(){
     resetProgress();
     return false;
-  })
+  });
 
   //Handle inputs from the input box on enter
   $("input").on("keypress",function(e){
     e.stopPropagation();
-    if(e.keyCode ==  13){
+    if(e.keyCode ===  13){
       enterHit();
       return false;
     }
@@ -185,7 +162,7 @@ function resetProgress(){
 
   $(".completed").removeClass("completed");
   loadLevel();
-  closeMenu();
+  // closeMenu();
   $("#mCSB_2_container").css("top",0); // Strange element to reset scroll due to scroll plugin
 }
 
@@ -211,7 +188,7 @@ function buildLevelmenu(){
   for(var i = 0; i < levels.length; i++){
     var level = levels[i];
     var item = document.createElement("a");
-    $(item).html("<span class='checkmark'></span><span class='level-number'>" + (i+1) + "</span>" + level.syntax);
+    $(item).html("<span class='checkmark'></span><span class='level-number'>" + (i+1) + "</span> Level: " + level.syntax);
     $(".level-menu .levels").append(item);
 
     if(checkCompleted(i)){
@@ -222,17 +199,9 @@ function buildLevelmenu(){
       finished = false;
       currentLevel = $(this).index();
       loadLevel();
-      closeMenu();
+      // closeMenu();
     });
   }
-}
-
-function closeMenu(){
-  $(".right-col").removeClass("menu-open");
-}
-
-function openMenu(){
-  $(".right-col").addClass("menu-open");
 }
 
 
@@ -425,7 +394,8 @@ function fireRule(rule) {
       winGame();
     } else {
       setTimeout(function(){
-        loadLevel();
+        // loadLevel();
+        showCode();
       },levelTimeout);
     }
   } else {
@@ -448,6 +418,26 @@ function fireRule(rule) {
   } else {
     trackProgress(currentLevel, "incorrect");
   }
+}
+
+function showCode() {
+  $('.check-code span').text(level.code);
+}
+
+function nextLevel() {
+  var rule = $("input").val();
+  var baseTable = $('.table');
+  var ruleSelected = $(".table").find(rule).not(baseTable);
+
+  if (Number($(".current .level-number").text()) === currentLevel+1) {
+    ruleSelected.removeClass("strobe");
+    ruleSelected.addClass("clean");
+    $("input").val("");
+    $('.check-code span').text("");
+    $(".input-wrapper").css("opacity",.2);
+    currentLevel++;
+  }
+  loadLevel();
 }
 
 // Marks an individual number as completed or incompleted
@@ -482,7 +472,6 @@ function trackProgress(levelNumber, type){
       progress.totalCorrect++;
       progress.percentComplete = progress.totalCorrect / levels.length;
       levelStats.gaSent = true;
-      sendEvent("guess", "correct", levelNumber + 1); // Send event
     }
   }
 
@@ -490,27 +479,11 @@ function trackProgress(levelNumber, type){
   var increment = .1;
   if(progress.percentComplete >= progress.lastPercentEvent + increment) {
     progress.lastPercentEvent = progress.lastPercentEvent + increment;
-    sendEvent("progress","percent", Math.round(progress.lastPercentEvent * 100));
   }
 
   localStorage.setItem("progress",JSON.stringify(progress));
 }
 
-
-// Sends event to Google Analytics
-// Doesn't send events if we're on localhost, as the ga variable is set to false
-function sendEvent(category, action, label){
-  if(!ga){
-    return;
-  }
-
-  ga('send', {
-    hitType: "event",
-    eventCategory: category,  // guess or progress
-    eventAction: action,      // action (correct vs not..)
-    eventLabel: label         // level number
-  });
-}
 
 function winGame(){
   $(".table").html('<span class="winner"><strong>You did it!</strong><br>You rock at CSS.</span>');
@@ -612,13 +585,6 @@ function loadLevel(){
 
   level = levels[currentLevel];
 
-  // Show the help link only for the first three levels
-  if(currentLevel < 3) {
-    $(".note-toggle").show();
-  } else {
-    $(".note-toggle").hide();
-  }
-
   $(".level-menu .current").removeClass("current");
   $(".level-menu div a").eq(currentLevel).addClass("current");
 
@@ -627,8 +593,15 @@ function loadLevel(){
 
   localStorage.setItem("currentLevel",currentLevel);
 
+  if(currentLevel == levels.length-1) {
+    $(".next").addClass("d-none");
+  } else {
+    $(".next").removeClass("d-none");
+  }
+
   loadBoard();
   resetTable();
+  $('.check-code span').text("");
 
   $(".level-header .level-text").html("Level " + (currentLevel+1) + " of " + levels.length);
 

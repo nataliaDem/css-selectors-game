@@ -13,7 +13,8 @@ var levels = [
     boardMarkup: `
     <plate/>
     <plate/>
-    `
+    `,
+    code: 'destination'
   },
   {
     doThis : "Select the bento boxes",

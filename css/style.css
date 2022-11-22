@@ -655,8 +655,8 @@ orange {
 
 .display-help {
   font-size: 15px;
-  margin: 30px auto 0 auto;
-  color: rgba(255,255,255,.6);
+  margin: 0 auto;
+  /*color: rgba(255,255,255,.6);*/
 }
 
 .display-help .selector-name {
@@ -690,7 +690,7 @@ orange {
 }
 
 .display-help .examples-title {
-  margin: 45px 0 10px 0;
+  margin: 15px 0 10px 0;
   padding: 0;
 }
 
@@ -702,7 +702,7 @@ orange {
 
 .display-help .example {
   border-bottom: solid 1px rgba(255,255,255,.1);
-  padding: 10px 0 12px 0;
+  padding: 5px 0;
   line-height: 170%;
 }
 
@@ -825,7 +825,7 @@ plate orange:nth-last-child(4)
 .level-header {
   font-size: 25px;
   margin: 0;
-  padding: 0 0 10px 0;
+  padding: 10px;
   color: #777;
 }
 
@@ -950,18 +950,15 @@ plate orange:nth-last-child(4)
   position: fixed;
   width: 375px;
   right: 0;
-/*  overflow: auto;*/
-  top: 40px;
   top: 0;
   bottom: 0;
   background: #221e18;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .level-menu {
-  position: absolute;
-  top: 0;
-  bottom: 0;
   overflow-y: hidden;
   transition: all .15s ease-in-out;
   background: rgba(0,0,0,1);
@@ -976,7 +973,7 @@ plate orange:nth-last-child(4)
 }
 
 .levels {
-  padding-bottom: 150px;
+  padding-bottom: 10px;
 }
 
 .level-menu h2 {
@@ -1042,7 +1039,7 @@ plate orange:nth-last-child(4)
 
 .level-menu .level-number {
   opacity: .6;
-  min-width: 24px;
+  min-width: 15px;
   display: inline-block;
 }
 
@@ -1321,21 +1318,41 @@ tag:after {
   overflow: visible !important;
 }
 
-
-.reset-progress {
+.btn {
   display: block;
   text-align: center;
   text-decoration: none;
   position: relative;
-  top: -20px;
   border: solid 2px rgba(255,255,255,.2);
   box-sizing: border-box;
   width: calc(100% - 40px);
   color: rgba(255,255,255,.4);
-  margin:  0 auto;
+  margin:  10px auto;
   padding: 9px 0 11px 0;
 }
 
-.reset-progress:hover {
+.check-code {
+  width: calc(100% - 40px);
+  color: rgba(77, 245, 65, 0.4);
+  margin:  10px auto;
+}
+
+.check-code div {
+  border: solid 2px rgba(77, 245, 65,.2);
+  text-align: center;
+  padding: 9px 0 11px 0;
+  margin-top: 10px;
+  height: 40px;
+}
+
+.reset-progress {
+
+}
+
+.btn:hover {
   background: rgba(255,255,255,.05);
+}
+
+.d-none {
+  display: none;
 }

@@ -35,6 +35,10 @@ $(document).ready(function(){
     autoHideScrollbar: true
   });
 
+  $(".next").on("click", function (){
+    nextLevel();
+  });
+
   $(".note-toggle").on("click", function(){
     // $(this).hide();
     $(".note").slideToggle();

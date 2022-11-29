@@ -23,15 +23,16 @@
 </head>
 
 <body>
-<div class="view auth-view">
-  <p>Enter your name:</p>
-  <input class="member-name" type="text" placeholder="name">
-  <button class="btn submit">Submit</button>
+<div class="view create-view">
+  <button class="btn create-game">Create new game</button>
 </div>
 <div class="view wait-view">
-  <p>Waiting for other players to join...</p>
+  <div class="game-code"></div>
+  <div>Game link: <a class="game-link"></a></div>
+  <p>Waiting for players to join...</p>
   <button class="btn fetch-members">Fetch players</button>
   <div class="leaderboard"></div>
+  <button class="btn start-game">Start game</button>
 </div>
 <div class="view game-view">
   <div class="left-col">

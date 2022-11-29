@@ -16,6 +16,8 @@ body {
   background-image: -moz-radial-gradient(20% 40%,contain circle, #3e392f, #221e17);
   background-repeat: no-repeat;
   position: relative;
+  color: rgba(255,255,255,.4);
+  text-align: center;
 }
 
 body * {
@@ -295,12 +297,23 @@ bento:before {
   background: rgba(0,0,0,.3);
 }
 
-.editor input {
+input {
   font-family: menlo, monospace;
   color: #333;
-  border: none;
+  background: none;
+  border: 1px solid rgba(62,203,255,.3) ;
+}
+
+.member-name {
+  width: 150px;
+  height: 35px;
+  padding: 5px;
+  color: rgba(255,255,255,.6);
+}
+
+.editor input {
   width: calc(100% - 44px);
-  background: none  ;
+  border: none;
 }
 
 .editor input.input-strobe {
@@ -811,7 +824,7 @@ plate orange:nth-last-child(4)
 }
 
 .level-progress .progress {
-  background: rgba(255,255,255,.2);
+  background: rgba(77, 245, 65,.3);;
   width: 10%;
   height: 2px;
   position: relative;
@@ -825,7 +838,7 @@ plate orange:nth-last-child(4)
   height: 4px;
   width: 4px;
   border: solid 2px #2a231d;
-  background: rgba(255,255,255,.5);
+  background: rgba(77, 245, 65,.5);
   -webkit-border-radius: 5px;
 }
 
@@ -894,7 +907,8 @@ plate orange:nth-last-child(4)
   text-align: center;
   overflow-x: visible;
   position: fixed;
-  top: 0;
+  /*temp*/
+  top: 150px;
   bottom: 0;
   left: 0;
   z-index: 2;
@@ -914,7 +928,7 @@ plate orange:nth-last-child(4)
   flex-direction: column;
 }
 
-.level-menu {
+.level-menu, .leaderboard {
   overflow-y: hidden;
   transition: all .15s ease-in-out;
   background: rgba(0,0,0,1);
@@ -922,6 +936,7 @@ plate orange:nth-last-child(4)
   left: 500px;
   padding: 0;
   width: 100%;
+  color: #777;
 }
 
 .menu-open .level-menu {
@@ -1281,10 +1296,15 @@ tag:after {
   position: relative;
   border: solid 2px rgba(255,255,255,.2);
   box-sizing: border-box;
-  width: calc(100% - 40px);
   color: rgba(255,255,255,.4);
   margin:  10px auto;
   padding: 9px 0 11px 0;
+  background: none;
+  min-width: 150px;
+}
+
+.right-col .btn {
+  width: calc(100% - 40px);
 }
 
 .check-code {
@@ -1301,14 +1321,36 @@ tag:after {
   height: 40px;
 }
 
-.reset-progress {
-
-}
-
 .btn:hover {
   background: rgba(255,255,255,.05);
+}
+
+.view {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .d-none {
   display: none;
 }
+
+.leaderboard {
+  padding: 20px;
+  height: 100%;
+}
+
+.leaderboard div {
+  padding: 5px 0;
+}
+
+.member-score {
+  color: rgba(77, 245, 65,.5);
+  margin-right: 5px;
+}
+
+.game-code {
+  font-size: 3rem;
+  color: rgba(77, 245, 65,.2);
+}
+

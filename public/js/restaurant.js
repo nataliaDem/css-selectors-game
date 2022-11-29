@@ -1,181 +1,193 @@
-/*
-  Function Reference
-  ==================
-
-  loadLevel() - loads up the level
-  fireRule() - fires the css rule
-  updateProgressUI() - adds a checkmark to the level menu and header when a correct guess is made, removes it if incorrect
-  hideTooltip() - hides markup tooltip that hovers over the elements
-  showHelp() - Loads help text & examples for each level
-
-  ..to be continued!
-*/
-
 var level;  // Holds current level info
-var currentLevel = parseInt(localStorage.currentLevel,10) || 0; // Keeps track of the current level Number (0 is level 1)
+var currentLevel = parseInt(localStorage.currentLevel, 10) || 0; // Keeps track of the current level Number (0 is level 1)
 var levelTimeout = 1000; // Delay between levels after completing
 var finished = false;    // Keeps track if the game is showing the Your Rock! screen (so that tooltips can be disabled)
 
+const baseUrl = window.location.origin;
+
 var blankProgress = {
-  totalCorrect : 0,
-  percentComplete : 0,
-  lastPercentEvent : 0,
-  guessHistory : {}
+  totalCorrect: 0,
+  percentComplete: 0,
+  lastPercentEvent: 0,
+  guessHistory: {}
 }
 
 // Get progress from localStorage, or start from scratch if we don't have any
 var progress = JSON.parse(localStorage.getItem("progress")) || blankProgress;
 
 
-$(document).ready(function(){
+$(document).ready(function () {
 
   // Custom scrollbar plugin
-  $(".left-col, .level-menu").mCustomScrollbar({
+  $(".left-col, .level-menu, .leaderboard").mCustomScrollbar({
     scrollInertia: 0,
     autoHideScrollbar: true
   });
 
-  $(".next").on("click", function (){
+  $(".next").on("click", function () {
     nextLevel();
   });
 
-  $(".note-toggle").on("click", function(){
+  $(".note-toggle").on("click", function () {
     // $(this).hide();
     $(".note").slideToggle();
   });
 
-  $(".level-menu-toggle-wrapper").on("click",function(){
-    if($(".menu-open").length == 0) {
-      openMenu();
-    } else {
-      closeMenu();
-    }
-  });
-
-  $(".level-nav").on("click","a",function(){
-
-    var direction;
-    if($(this).hasClass("next")) {
-      direction = "next";
-    }
-
-    addAnimation($(this),"link-jiggle");
-
-    if(direction === "next") {
-      currentLevel++;
-      if(currentLevel >= levels.length) {
-        currentLevel = levels.length - 1;
-      }
-    } else {
-      currentLevel--;
-      if(currentLevel < 0) {
-        currentLevel = 0;
-      }
-    }
-
-    loadLevel();
-    return false;
-  });
-
-  // Resets progress and progress indicators
-  $(".reset-progress").on("click",function(){
+// Resets progress and progress indicators
+  $(".reset-progress").on("click", function () {
     resetProgress();
     return false;
   });
 
-  //Handle inputs from the input box on enter
-  $("input").on("keypress",function(e){
+//Handle inputs from the input box on enter
+  $(".editor-pane input").on("keypress", function (e) {
     e.stopPropagation();
-    if(e.keyCode ===  13){
+    if (e.keyCode === 13) {
       enterHit();
       return false;
     }
   });
 
-  $("input").on("keyup",function(e){
+  $(".editor-pane input").on("keyup", function (e) {
     e.stopPropagation();
     var length = $(this).val().length;
-    if(length > 0) {
-      $("input").removeClass("input-strobe");
+    if (length > 0) {
+      $(".editor-pane input").removeClass("input-strobe");
     } else {
-      $("input").addClass("input-strobe");
+      $(".editor-pane input").addClass("input-strobe");
     }
   });
 
-  $(".editor").on("click",function(){
-    $("input").focus();
+  $(".editor").on("click", function () {
+    $(".editor-pane input").focus();
   });
 
-  //Add tooltips
-  $(".table").on("mouseover","*",function(e){
+//Add tooltips
+  $(".table").on("mouseover", "*", function (e) {
     e.stopPropagation();
     showTooltip($(this));
   });
 
-  //Shows the tooltip on the table
-  $(".markup").on("mouseover","div *",function(e){
+//Shows the tooltip on the table
+  $(".markup").on("mouseover", "div *", function (e) {
     el = $(this);
     var markupElements = $(".markup *");
-    var index = markupElements.index(el) -1;
+    var index = markupElements.index(el) - 1;
     showTooltip($(".table *").eq(index));
     e.stopPropagation();
   });
 
-  // Shows the tooltip on the table
-  $(".markup").on("mouseout","*",function(e){
+// Shows the tooltip on the table
+  $(".markup").on("mouseout", "*", function (e) {
     e.stopPropagation();
     hideTooltip();
   });
 
-  $(".table").on("mouseout","*", function(e){
+  $(".table").on("mouseout", "*", function (e) {
     hideTooltip();
     e.stopPropagation();
   });
 
-  $(".enter-button").on("click",function(){
+  $(".enter-button").on("click", function () {
     enterHit();
   })
 
-  $(".table-wrapper,.table-edge").css("opacity",0);
+  $(".table-wrapper,.table-edge").css("opacity", 0);
+
+  $(".submit").on("click", function () {
+    login();
+  });
+
+  $(".create-game").on("click", function () {
+    createNewGame();
+  });
+
+  $(".fetch-members").on("click", function () {
+    showLeaderBoard();
+  });
 
   buildLevelmenu();
+  showLeaderBoard();
 
-  setTimeout(function(){
+  setTimeout(function () {
     loadLevel();
-    $(".table-wrapper,.table-edge").css("opacity",1);
-  },50);
-});
+    $(".table-wrapper,.table-edge").css("opacity", 1);
+  }, 50);
 
-function addAnimation(el, className){
-  el.addClass("link-jiggle");
-  el.one("animationend",function(e){
-    $(e.target).removeClass("link-jiggle");
-  })
+  const urlParams = new URLSearchParams(window.location.search);
+  const gameCode = urlParams.get('code');
+  localStorage.setItem("gameCode", gameCode);
+
+  $(".game-view, .wait-view").addClass('d-none');
+
+})
+
+function createNewGame() {
+  axios.get(`${baseUrl}/create-game`)
+    .then(res => {
+      console.log(res.data);
+      $('.game-code').text(res.data);
+      $('.game-link').text(`${baseUrl}/?code=${res.data}`);
+      $(".wait-view").removeClass('d-none');
+      $(".create-view").addClass('d-none');
+      localStorage.setItem("gameCode", res.data);
+    });
 }
 
-// Reset all progress
-// * Removes checkmarks from level header and list
-// * Scrolls level menu to top
-// * Resets the progress object
+function login() {
+  const gameCode = localStorage.getItem("gameCode");
+  console.log(gameCode);
+  const name = $('.member-name').val();
+  console.log(name);
+  axios.post(`${baseUrl}/auth?code=${gameCode}`, {name: name})
+    .then(res => {
+      console.log(res.data);
+      localStorage.setItem("userId", res.data);
+      $(".wait-view").removeClass('d-none');
+      $(".auth-view").addClass('d-none');
+    });
+}
 
-function resetProgress(){
+function showLeaderBoard() {
+  const gameCode = localStorage.getItem("gameCode");
+  $('.leaderboard').empty();
+  axios.get(`${baseUrl}/leaderboard?code=${gameCode}`)
+    .then(res => {
+      console.log(res.data);
+      for (let member of res.data) {
+        const item = document.createElement("div");
+        $(item).html("<span class='member-score'>" + member.progress + "</span><span class='member-name'>" + member.name + "</span>");
+        $(".leaderboard").append(item);
+      }
+    });
+}
+
+function updateProgress(level) {
+  const gameCode = localStorage.getItem("gameCode");
+  const userId = localStorage.getItem("userId")
+  axios.post(`${baseUrl}/update-progress?code=${gameCode}`, {
+    id: userId,
+    level: level
+  })
+    .then(res => {
+      console.log(res.data);
+    });
+}
+
+function resetProgress() {
   currentLevel = 0;
   progress = blankProgress;
-  localStorage.setItem("progress",JSON.stringify(progress));
+  localStorage.setItem("progress", JSON.stringify(progress));
   finished = false;
 
   $(".completed").removeClass("completed");
   loadLevel();
-  // closeMenu();
-  $("#mCSB_2_container").css("top",0); // Strange element to reset scroll due to scroll plugin
+  $("#mCSB_2_container").css("top", 0); // Strange element to reset scroll due to scroll plugin
 }
 
-
-//Checks if the level is completed
-
-function checkCompleted(levelNumber){
-  if(progress.guessHistory[levelNumber]){
-    if(progress.guessHistory[levelNumber].correct){
+function checkCompleted(levelNumber) {
+  if (progress.guessHistory[levelNumber]) {
+    if (progress.guessHistory[levelNumber].correct) {
       return true;
     } else {
       return false;
@@ -185,21 +197,18 @@ function checkCompleted(levelNumber){
   }
 }
 
-
-// Builds the slide-out level menu
-
-function buildLevelmenu(){
-  for(var i = 0; i < levels.length; i++){
+function buildLevelmenu() {
+  for (var i = 0; i < levels.length; i++) {
     var level = levels[i];
     var item = document.createElement("a");
-    $(item).html("<span class='checkmark'></span><span class='level-number'>" + (i+1) + "</span> Level: " + level.syntax);
+    $(item).html("<span class='checkmark'></span><span class='level-number'>" + (i + 1) + "</span> Level: " + level.syntax);
     $(".level-menu .levels").append(item);
 
-    if(checkCompleted(i)){
+    if (checkCompleted(i)) {
       $(item).addClass("completed");
     }
 
-    $(item).on("click",function(){
+    $(item).on("click", function () {
       finished = false;
       currentLevel = $(this).index();
       loadLevel();
@@ -208,22 +217,18 @@ function buildLevelmenu(){
   }
 }
 
-
-// Hides & shows the tooltip that appears when an eleemnt
-// on the table or the editor is hovered over.
-
-function hideTooltip(){
+function hideTooltip() {
   $(".enhance").removeClass("enhance");
   $("[data-hovered]").removeAttr("data-hovered");
   $(".helper").hide();
 }
 
-function showTooltip(el){
-  if(finished){
+function showTooltip(el) {
+  if (finished) {
     return; // Only show tooltip if the game isn't finished yet
   }
 
-  el.attr("data-hovered",true);
+  el.attr("data-hovered", true);
   var tableElements = $(".table *");
   var index = tableElements.index(el);
   var that = el;
@@ -232,8 +237,8 @@ function showTooltip(el){
   var helper = $(".helper");
 
   var pos = el.offset();
-  helper.css("top",pos.top - 65);
-  helper.css("left",pos.left + (el.width()/2));
+  helper.css("top", pos.top - 65);
+  helper.css("left", pos.left + (el.width() / 2));
 
   var helpertext;
 
@@ -243,24 +248,24 @@ function showTooltip(el){
 
   var elClass = el.attr("class");
 
-  if(elClass) {
-    if(elClass.indexOf("strobe") > -1){
-      elClass = elClass.replace("strobe","");
+  if (elClass) {
+    if (elClass.indexOf("strobe") > -1) {
+      elClass = elClass.replace("strobe", "");
     }
   }
 
-  if(elClass) {
+  if (elClass) {
     helpertext = helpertext + ' class="' + elClass + '"';
   }
 
   var elFor = el.attr("for");
 
-  if(elFor) {
+  if (elFor) {
     helpertext = helpertext + ' for="' + elFor + '"';
   }
 
   var id = el.attr("id");
-  if(id) {
+  if (id) {
     helpertext = helpertext + ' id="' + id + '"';
   }
 
@@ -271,31 +276,29 @@ function showTooltip(el){
 
 
 //Animate the enter button
-function enterHit(){
+function enterHit() {
   $(".enter-button").removeClass("enterhit");
   $(".enter-button").width($(".enter-button").width());
   $(".enter-button").addClass("enterhit");
-  var value = $("input").val();
+  var value = $(".editor-pane input").val();
   handleInput(value);
 }
 
-
-//Parses text from the input field
-function handleInput(text){
-  if(parseInt(text,10) > 0 && parseInt(text,10) < levels.length+1) {
-    currentLevel = parseInt(text,10) - 1;
+function handleInput(text) {
+  if (parseInt(text, 10) > 0 && parseInt(text, 10) < levels.length + 1) {
+    currentLevel = parseInt(text, 10) - 1;
     loadLevel();
     return;
   }
+  console.log(text)
   fireRule(text);
 }
 
-// Loads up the help text & examples for each level
 function showHelp() {
 
   var helpTitle = level.helpTitle || "";
   var help = level.help || "";
-  var examples = level.examples ||[];
+  var examples = level.examples || [];
   var selector = level.selector || "";
   var syntax = level.syntax || "";
   var syntaxExample = level.syntaxExample || "";
@@ -308,7 +311,7 @@ function showHelp() {
   $(".display-help .examples").html("");
   $(".display-help .examples-title").hide(); // Hide the "Examples" heading
 
-  for(var i = 0; i < examples.length; i++){
+  for (var i = 0; i < examples.length; i++) {
     var example = $("<div class='example'>" + examples[i] + "</div>");
     $(".display-help .examples").append(example);
     $(".display-help .examples-title").show(); // Show it if there are examples
@@ -318,15 +321,13 @@ function showHelp() {
   $(".display-help .selector").text(selector);
 }
 
-function resetTable(){
+function resetTable() {
   $(".display-help").removeClass("open-help");
   $(".clean,.strobe").removeClass("clean,strobe");
   $(".clean,.strobe").removeClass("clean,strobe");
-  $("input").addClass("input-strobe");
-  $(".table *").each(function(){
+  $(".editor-pane input").addClass("input-strobe");
+  $(".table *").each(function () {
     $(this).width($(this).width());
-    // $(this).removeAttr("style");
-    // TODO - needed?? Probably not, everything gets removed anyway
   });
 
   var tableWidth = $(".table").outerWidth();
@@ -335,30 +336,16 @@ function resetTable(){
 
 function fireRule(rule) {
 
-  // prevent cheating
-  if(rule === ".strobe") {
+  if (rule === ".strobe") {
     rule = null;
   }
 
   $(".shake").removeClass("shake");
 
-  $(".strobe,.clean,.shake").each(function(){
+  $(".strobe,.clean,.shake").each(function () {
     $(this).width($(this).width());
     $(this).removeAttr("style");
   });
-
-  /*
-  * Sean Nessworthy <sean@nessworthy.me>
-  * On 03/17/14
-  *
-  * Allow [div][.table] to preceed the answer.
-  * Makes sense if div.table is going to be included in the HTML viewer
-  * and users want to try and use it in their selectors.
-  *
-  * However, if it is included as a specific match, filter it out.
-  * This resolves the  "Match all the things!" level from beheading the table too.
-  * Relatedly, watching that happen made me nearly spill my drink.
-  */
 
   // var baseTable = $('.table-wrapper > .table, .table-wrapper > .nametags, .table-wrapper > .table-surface');
   var baseTable = $('.table');
@@ -367,8 +354,7 @@ function fireRule(rule) {
   // If it errors out, change the rule to null so the wrong-guess animation will work
   try {
     $(".table").find(rule).not(baseTable);
-  }
-  catch(err) {
+  } catch (err) {
     rule = null;
   }
 
@@ -378,47 +364,49 @@ function fireRule(rule) {
   var win = false;
 
   // If nothing is selected
-  if(ruleSelected.length == 0) {
+  if (ruleSelected.length == 0) {
     $(".editor").addClass("shake");
   }
 
-  if(ruleSelected.length == levelSelected.length && ruleSelected.length > 0){
-    win = checkResults(ruleSelected,levelSelected,rule);
+  if (ruleSelected.length == levelSelected.length && ruleSelected.length > 0) {
+    win = checkResults(ruleSelected, levelSelected, rule);
   }
 
-  if(win){
+  if (win) {
     ruleSelected.removeClass("strobe");
     ruleSelected.addClass("clean");
-    $("input").val("");
-    $(".input-wrapper").css("opacity",.2);
+    $(".editor-pane input").val("");
+    $(".input-wrapper").css("opacity", .2);
+    updateProgress(currentLevel)
     updateProgressUI(currentLevel, true);
     currentLevel++;
 
-    if(currentLevel >= levels.length) {
+    if (currentLevel >= levels.length) {
       winGame();
     } else {
-      setTimeout(function(){
-        // loadLevel();
-        showCode();
-      },levelTimeout);
+      setTimeout(function () {
+        loadLevel();
+        showLeaderBoard();
+        // showCode();
+      }, levelTimeout);
     }
   } else {
     ruleSelected.removeClass("strobe");
     ruleSelected.addClass("shake");
 
-    setTimeout(function(){
+    setTimeout(function () {
       $(".shake").removeClass("shake");
       $(".strobe").removeClass("strobe");
       levelSelected.addClass("strobe");
-    },500);
+    }, 500);
 
     $(".result").fadeOut();
   }
 
   // If answer is correct, let's track progress
 
-  if(win){
-    trackProgress(currentLevel-1, "correct");
+  if (win) {
+    trackProgress(currentLevel - 1, "correct");
   } else {
     trackProgress(currentLevel, "incorrect");
   }
@@ -429,16 +417,16 @@ function showCode() {
 }
 
 function nextLevel() {
-  var rule = $("input").val();
+  var rule = $(".editor-pane input").val();
   var baseTable = $('.table');
   var ruleSelected = $(".table").find(rule).not(baseTable);
 
-  if (Number($(".current .level-number").text()) === currentLevel+1) {
+  if (Number($(".current .level-number").text()) === currentLevel + 1) {
     ruleSelected.removeClass("strobe");
     ruleSelected.addClass("clean");
-    $("input").val("");
+    $(".editor-pane input").val("");
     $('.check-code span').text("");
-    $(".input-wrapper").css("opacity",.2);
+    $(".input-wrapper").css("opacity", .2);
     currentLevel++;
   }
   loadLevel();
@@ -446,32 +434,32 @@ function nextLevel() {
 
 // Marks an individual number as completed or incompleted
 // Just in the level heading though, not the level list
-function updateProgressUI(levelNumber, completed){
-  if(completed) {
-    $(".levels a:nth-child("+ (levelNumber+1) + ")").addClass("completed");
+function updateProgressUI(levelNumber, completed) {
+  if (completed) {
+    $(".levels a:nth-child(" + (levelNumber + 1) + ")").addClass("completed");
     $(".level-header").addClass("completed");
   } else {
     $(".level-header").removeClass("completed");
   }
 }
 
-function trackProgress(levelNumber, type){
-  if(!progress.guessHistory[levelNumber]) {
+function trackProgress(levelNumber, type) {
+  if (!progress.guessHistory[levelNumber]) {
     progress.guessHistory[levelNumber] = {
-      correct : false,
-      incorrectCount : 0,
-      gaSent : false
+      correct: false,
+      incorrectCount: 0,
+      gaSent: false
     };
   }
 
   var levelStats = progress.guessHistory[levelNumber];
 
-  if(type == "incorrect"){
-    if(levelStats.correct == false) {
+  if (type == "incorrect") {
+    if (levelStats.correct == false) {
       levelStats.incorrectCount++; // Only update the incorrect count until it is guessed correctly
     }
   } else {
-    if(levelStats.correct == false) {
+    if (levelStats.correct == false) {
       levelStats.correct = true;
       progress.totalCorrect++;
       progress.percentComplete = progress.totalCorrect / levels.length;
@@ -481,50 +469,50 @@ function trackProgress(levelNumber, type){
 
   // Increments the completion percentage by 10%, and sends an event every time
   var increment = .1;
-  if(progress.percentComplete >= progress.lastPercentEvent + increment) {
+  if (progress.percentComplete >= progress.lastPercentEvent + increment) {
     progress.lastPercentEvent = progress.lastPercentEvent + increment;
   }
 
-  localStorage.setItem("progress",JSON.stringify(progress));
+  localStorage.setItem("progress", JSON.stringify(progress));
 }
 
 
-function winGame(){
+function winGame() {
   $(".table").html('<span class="winner"><strong>You did it!</strong><br>You rock at CSS.</span>');
   addNametags();
   finished = true;
   resetTable();
 }
 
-function checkResults(ruleSelected,levelSelected,rule){
+function checkResults(ruleSelected, levelSelected, rule) {
   var ruleTable = $(".table").clone();
   ruleTable.find(".strobe").removeClass("strobe");
   ruleTable.find(rule).addClass("strobe");
-  return($(".table").html() == ruleTable.html());
+  return ($(".table").html() == ruleTable.html());
 }
 
 // Returns all formatted markup within an element...
 
-function getMarkup(el){
+function getMarkup(el) {
   var hasChildren = el.children.length > 0 ? true : false;
   var elName = el.tagName.toLowerCase();
   var wrapperEl = $("<div/>");
   var attributeString = "";
-  $.each(el.attributes, function() {
-    if(this.specified) {
-     attributeString = attributeString + ' '  + this.name + '="' + this.value + '"';
-   }
+  $.each(el.attributes, function () {
+    if (this.specified) {
+      attributeString = attributeString + ' ' + this.name + '="' + this.value + '"';
+    }
   });
   var attributeSpace = "";
-  if(attributeString.length > 0){
+  if (attributeString.length > 0) {
     attributeSpace = " ";
   }
-  if(hasChildren) {
+  if (hasChildren) {
     wrapperEl.text("<" + elName + attributeSpace + attributeString + ">");
-    $(el.children).each(function(i,el){
+    $(el.children).each(function (i, el) {
       wrapperEl.append(getMarkup(el));
     });
-    wrapperEl.append("&lt;/" + elName +  "&gt;");
+    wrapperEl.append("&lt;/" + elName + "&gt;");
   } else {
     wrapperEl.text("<" + elName + attributeSpace + attributeString + " />");
   }
@@ -533,7 +521,7 @@ function getMarkup(el){
 
 //new board loader...
 
-function loadBoard(){
+function loadBoard() {
 
   var boardString = level.board;  // just a placeholder to iterate over...
   boardMarkup = ""; // what is this
@@ -543,8 +531,8 @@ function loadBoard(){
 
   var markupHolder = $("<div/>")
 
-  $(level.boardMarkup).each(function(i,el){
-    if(el.nodeType == 1){
+  $(level.boardMarkup).each(function (i, el) {
+    if (el.nodeType == 1) {
       var result = getMarkup(el);
       markupHolder.append(result);
     }
@@ -559,29 +547,29 @@ function loadBoard(){
 }
 
 // Adds nametags to the items on the table
-function addNametags(){
+function addNametags() {
   $(".nametags *").remove();
-  $(".table-wrapper").css("transform","rotateX(0)");
+  $(".table-wrapper").css("transform", "rotateX(0)");
   $(".table-wrapper").width($(".table-wrapper").width());
 
-  $(".table *").each(function(){
-    if($(this).attr("for")){
+  $(".table *").each(function () {
+    if ($(this).attr("for")) {
       var pos = $(this).position();
       var width = $(this).width();
       var nameTag = $("<div class='nametag'>" + $(this).attr("for") + "</div>");
       $(".nametags").append(nameTag);
-      var tagPos = pos.left + (width/2) - nameTag.width()/2 + 12;
-      nameTag.css("left",tagPos);
+      var tagPos = pos.left + (width / 2) - nameTag.width() / 2 + 12;
+      nameTag.css("left", tagPos);
     }
   });
 
-  $(".table-wrapper").css("transform","rotateX(20deg)");
+  $(".table-wrapper").css("transform", "rotateX(20deg)");
 }
 
 
-function loadLevel(){
+function loadLevel() {
   // Make sure we don't load a level we don't have
-  if(currentLevel < 0 || currentLevel >= levels.length) {
+  if (currentLevel < 0 || currentLevel >= levels.length) {
     currentLevel = 0;
   }
 
@@ -592,12 +580,12 @@ function loadLevel(){
   $(".level-menu .current").removeClass("current");
   $(".level-menu div a").eq(currentLevel).addClass("current");
 
-  var percent = (currentLevel+1)/levels.length * 100;
-  $(".progress").css("width",percent + "%");
+  var percent = (currentLevel + 1) / levels.length * 100;
+  $(".progress").css("width", percent + "%");
 
-  localStorage.setItem("currentLevel",currentLevel);
+  localStorage.setItem("currentLevel", currentLevel);
 
-  if(currentLevel == levels.length-1) {
+  if (currentLevel == levels.length - 1) {
     $(".next").addClass("d-none");
   } else {
     $(".next").removeClass("d-none");
@@ -607,41 +595,20 @@ function loadLevel(){
   resetTable();
   $('.check-code span').text("");
 
-  $(".level-header .level-text").html("Level " + (currentLevel+1) + " of " + levels.length);
+  $(".level-header .level-text").html("Level " + (currentLevel + 1) + " of " + levels.length);
 
   updateProgressUI(currentLevel, checkCompleted(currentLevel));
 
   $(".order").text(level.doThis);
-  $("input").val("").focus();
+  $(".editor-pane input").val("").focus();
 
-  $(".input-wrapper").css("opacity",1);
+  $(".input-wrapper").css("opacity", 1);
   $(".result").text("");
 
   //Strobe what's supposed to be selected
-  setTimeout(function(){
+  setTimeout(function () {
     $(".table " + level.selector).addClass("strobe");
     $(".pop").removeClass("pop");
-  },200);
+  }, 200);
 
-}
-
-// Popup positioning code from...
-// http://stackoverflow.com/questions/4068373/center-a-popup-window-on-screen
-
-function PopupCenter(url, title, w, h) {
-  // Fixes dual-screen position                         Most browsers      Firefox
-  var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : screen.left;
-  var dualScreenTop = window.screenTop != undefined ? window.screenTop : screen.top;
-
-  var width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
-  var height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
-
-  var left = ((width / 2) - (w / 2)) + dualScreenLeft;
-  var top = ((height / 2) - (h / 2)) + dualScreenTop;
-  var newWindow = window.open(url, title, 'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
-
-  // Puts focus on the newWindow
-  if (window.focus) {
-    newWindow.focus();
-  }
 }

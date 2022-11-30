@@ -3,6 +3,11 @@
 <head>
   <title>CSS Selectors game</title>
   <script src="public/js/jquery.js" type="text/javascript" charset="utf-8"></script>
+  <script>
+    $(document).ready(function () {
+      localStorage.setItem("gameUser", "player");
+    })
+  </script>
   <script src="public/js/levels.js" type="text/javascript" charset="utf-8"></script>
   <script src="public/js/restaurant.js" type="text/javascript" charset="utf-8"></script>
   <script src="public/js/jquery.mCustomScrollbar.min.js"></script>
@@ -25,15 +30,14 @@
 <body>
 <div class="view auth-view">
   <p>Enter your name:</p>
-  <input class="member-name" type="text" placeholder="name">
+  <input id="member-name" class="member-name" type="text" placeholder="name">
   <button class="btn submit">Submit</button>
 </div>
-<div class="view wait-view">
+<div class="view player-wait-view">
   <p>Waiting for other players to join...</p>
-  <button class="btn fetch-members">Fetch players</button>
   <div class="leaderboard"></div>
 </div>
-<div class="view game-view">
+<div class="view player-game-view">
   <div class="left-col">
     <h2 class="order"></h2>
     <a class="note-toggle" href="#">Help, I'm stuck!</a>
@@ -106,11 +110,10 @@
       <div class="level-progress">
         <div class="progress"></div>
       </div>
-      <!--        <div class="levels"></div>-->
     </div>
     <div class="leaderboard"></div>
     <div>
-      <a class="btn reset-progress" href="#">Reset Progress</a>
+      <a class="btn reset-progress" href="#">Reset</a>
     </div>
   </div>
 </div>

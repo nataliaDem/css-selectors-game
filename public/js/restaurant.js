@@ -3,6 +3,7 @@ var currentLevel = parseInt(localStorage.currentLevel, 10) || 0; // Keeps track 
 var levelTimeout = 1000; // Delay between levels after completing
 var finished = false;    // Keeps track if the game is showing the Your Rock! screen (so that tooltips can be disabled)
 
+const intervalTimeout = 1000;
 const baseUrl = window.location.origin;
 
 var blankProgress = {
@@ -11,6 +12,18 @@ var blankProgress = {
   lastPercentEvent: 0,
   guessHistory: {}
 }
+
+var gameInfo = {
+  user: {
+    role: "",
+    id: null
+  },
+  code: null
+}
+
+const urlParams = new URLSearchParams(window.location.search);
+let gameCode = urlParams.get("code") || localStorage.getItem("gameCode") || null;
+localStorage.setItem("gameCode", gameCode);
 
 // Get progress from localStorage, or start from scratch if we don't have any
 var progress = JSON.parse(localStorage.getItem("progress")) || blankProgress;
@@ -22,10 +35,6 @@ $(document).ready(function () {
   $(".left-col, .level-menu, .leaderboard").mCustomScrollbar({
     scrollInertia: 0,
     autoHideScrollbar: true
-  });
-
-  $(".next").on("click", function () {
-    nextLevel();
   });
 
   $(".note-toggle").on("click", function () {
@@ -94,6 +103,10 @@ $(document).ready(function () {
 
   $(".table-wrapper,.table-edge").css("opacity", 0);
 
+  $(".game-code, .game-link").on("click", function () {
+    copyGameUrlToClipboard();
+  });
+
   $(".submit").on("click", function () {
     login();
   });
@@ -102,8 +115,8 @@ $(document).ready(function () {
     createNewGame();
   });
 
-  $(".fetch-members").on("click", function () {
-    showLeaderBoard();
+  $(".start-game").on("click", function () {
+    startGameByAdmin();
   });
 
   buildLevelmenu();
@@ -114,23 +127,84 @@ $(document).ready(function () {
     $(".table-wrapper,.table-edge").css("opacity", 1);
   }, 50);
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const gameCode = urlParams.get('code');
-  localStorage.setItem("gameCode", gameCode);
+  if (Number(localStorage.getItem("gameCode"))) {
+    showGameViewForAdmin(gameCode);
+    if (localStorage.getItem("gameStatus") === "active") {
+      showGameViewForPlayer();
+    } else if (localStorage.getItem("userIsLogged")) {
+      showWaitViewForPlayer();
+      var checkGameStarted = setInterval(function() {
+        startGameForPlayer()
+      }, intervalTimeout);
+    } else {
+      showAuthViewForPlayer();
+    }
+  } else {
+    showStartViewForAdmin();
+  }
 
+  setInterval(function() {
+    showLeaderBoard();
+  }, intervalTimeout);
+
+});
+
+function showStartViewForAdmin() {
   $(".game-view, .wait-view").addClass('d-none');
+  $(".create-view").removeClass('d-none');
+}
 
-})
+function showAuthViewForPlayer() {
+  $(".player-game-view, .player-wait-view").addClass('d-none');
+  $(".auth-view").removeClass('d-none');
+}
+
+function showGameViewForAdmin(code) {
+  $('.game-code').text(code);
+  $('.game-link').text(`${baseUrl}/?code=${code}`);
+  $(".create-view").addClass('d-none');
+  $(".wait-view, .game-view").removeClass('d-none');
+}
+
+function showWaitViewForPlayer() {
+  $(".auth-view, .player-game-view").addClass('d-none');
+  $(".player-wait-view").removeClass('d-none');
+}
+
+function showGameViewForPlayer() {
+  $(".auth-view, .player-wait-view").addClass('d-none');
+  $(".player-game-view").removeClass('d-none');
+  loadLevel();
+}
 
 function createNewGame() {
   axios.get(`${baseUrl}/create-game`)
     .then(res => {
-      console.log(res.data);
-      $('.game-code').text(res.data);
-      $('.game-link').text(`${baseUrl}/?code=${res.data}`);
-      $(".wait-view").removeClass('d-none');
-      $(".create-view").addClass('d-none');
+      showGameViewForAdmin(res.data);
+      loadLevel();
       localStorage.setItem("gameCode", res.data);
+    });
+}
+
+function startGameByAdmin() {
+  const gameCode = localStorage.getItem("gameCode");
+  axios.post(`${baseUrl}/start-game?code=${gameCode}`)
+    .then(res => {
+      $('.start-game').addClass('.d-none');
+      localStorage.setItem("gameStatus", "active");
+    });
+}
+
+function startGameForPlayer() {
+  const gameCode = localStorage.getItem("gameCode");
+  axios.get(`${baseUrl}/check-game-started?code=${gameCode}`)
+    .then(res => {
+      console.log(res.data);
+      if (res.data) {
+        showGameViewForPlayer();
+        localStorage.setItem("gameStatus", "active");
+        clearInterval(checkGameStarted);
+      }
     });
 }
 
@@ -142,9 +216,12 @@ function login() {
   axios.post(`${baseUrl}/auth?code=${gameCode}`, {name: name})
     .then(res => {
       console.log(res.data);
+      localStorage.setItem("userIsLogged", true);
       localStorage.setItem("userId", res.data);
-      $(".wait-view").removeClass('d-none');
-      $(".auth-view").addClass('d-none');
+      showWaitViewForPlayer();
+      var checkGameStarted = setInterval(function() {
+        startGameForPlayer()
+      }, intervalTimeout);
     });
 }
 
@@ -162,22 +239,32 @@ function showLeaderBoard() {
     });
 }
 
-function updateProgress(level) {
+function updateProgress(level, timestamp) {
   const gameCode = localStorage.getItem("gameCode");
   const userId = localStorage.getItem("userId")
   axios.post(`${baseUrl}/update-progress?code=${gameCode}`, {
     id: userId,
-    level: level
+    level: level + 1,
+    lastAnswerTime: timestamp
   })
     .then(res => {
       console.log(res.data);
     });
 }
 
+function copyGameUrlToClipboard() {
+  const copyText = $('.game-link').text();
+  navigator.clipboard.writeText(copyText);
+}
+
 function resetProgress() {
   currentLevel = 0;
   progress = blankProgress;
   localStorage.setItem("progress", JSON.stringify(progress));
+  localStorage.removeItem("gameCode");
+  localStorage.removeItem("gameUser");
+  localStorage.removeItem("userId");
+  localStorage.removeItem("userIsLogged");
   finished = false;
 
   $(".completed").removeClass("completed");
@@ -377,7 +464,8 @@ function fireRule(rule) {
     ruleSelected.addClass("clean");
     $(".editor-pane input").val("");
     $(".input-wrapper").css("opacity", .2);
-    updateProgress(currentLevel)
+    const timestamp = new Date();
+    updateProgress(currentLevel, timestamp)
     updateProgressUI(currentLevel, true);
     currentLevel++;
 

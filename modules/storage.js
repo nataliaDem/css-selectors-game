@@ -5,20 +5,24 @@ function _getGameInfo(code) {
 }
 
 function _getUserInfo(code, userId) {
-  return _getGameInfo(code).get(userId);
+  return _getGameInfo(code).players.get(userId);
 }
 
 function createGame() {
   const code = Math.floor(Math.random() * (999999 - 100000) + 100000).toString();
   if (!games.has(code)) {
-    games.set(code, new Map());
+    const gameInfo = {
+      status: "new",
+      players: new Map()
+    }
+    games.set(code, gameInfo);
   }
   return code;
 }
 
 function addUser(user_name, code) {
-  const index = _getGameInfo(code).size;
-  _getGameInfo(code).set(index, {name: user_name, progress: 0});
+  const index = _getGameInfo(code).players.size;
+  _getGameInfo(code).players.set(index, {name: user_name, progress: 0, lastAnswerTime: 0});
   return index;
 }
 
@@ -26,21 +30,44 @@ function updateProgress(details, code) {
   const index = Number(details.userId);
   const userInfo = _getUserInfo(code, index);
   userInfo.progress = details.completedLevel;
-  _getGameInfo(code).set(index, userInfo);
+  userInfo.lastAnswerTime = details.lastAnswerTime;
+  _getGameInfo(code).players.set(index, userInfo);
   console.log(`Updated: ${index}`);
 }
 
+function startGame(code) {
+  _getGameInfo(code).status = "started";
+}
+
+function isGameStarted(code) {
+  if ( _getGameInfo(code)) {
+    return _getGameInfo(code).status === "started";
+  } else {
+    return false;
+  }
+}
+
 function getLeaderboard(code) {
-  const users = [..._getGameInfo(code).values()];
-  const leaderboard = users.sort((a,b) => {
-    return b.progress - a.progress;
-  });
-  return leaderboard;
+  if (_getGameInfo(code)) {
+    const users = [..._getGameInfo(code).players.values()];
+    const leaderboard = users.sort((a,b) => {
+      if (b.progress === a.progress) {
+        return b.lastAnswerTime - a.lastAnswerTime;
+      } else {
+        return b.progress - a.progress;
+      }
+    });
+    return leaderboard;
+  } else {
+    return [];
+  }
 }
 
 module.exports = {
   updateProgress,
   getLeaderboard,
   addUser,
-  createGame
+  createGame,
+  startGame,
+  isGameStarted
 }

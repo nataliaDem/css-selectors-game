@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const router = express.Router();
-const {addUser, getLeaderboard, updateProgress, createGame} = require('./modules/storage.js');
+const {addUser, getLeaderboard, updateProgress, createGame, startGame, isGameStarted} = require('./modules/storage.js');
 
 
 const app = express();
@@ -40,7 +40,8 @@ router.post('/update-progress', async function(req, res) {
   const userId = req.body.id;
   const game_code = req.query.code;
   const completedLevel = req.body.level;
-  updateProgress({userId, completedLevel}, game_code)
+  const lastAnswerTime = req.body.lastAnswerTime
+  updateProgress({userId, completedLevel, lastAnswerTime}, game_code)
   res.end(userId.toString());
 });
 
@@ -48,6 +49,16 @@ router.get('/leaderboard', async function (req, res) {
   const leaderboard = await getLeaderboard(req.query.code);
   console.log(leaderboard);
   res.json(leaderboard);
+});
+
+router.post('/start-game', async function(req, res) {
+  const game_code = req.query.code;
+  startGame(game_code);
+});
+
+router.get('/check-game-started', async function(req, res) {
+  const game_code = req.query.code;
+  res.end(isGameStarted(game_code).toString());
 });
 
 app.listen(port, async function () {

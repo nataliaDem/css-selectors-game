@@ -3,13 +3,9 @@
 <head>
   <title>CSS Selectors game</title>
   <script src="public/js/jquery.js" type="text/javascript" charset="utf-8"></script>
-  <script>
-    $(document).ready(function () {
-      localStorage.setItem("gameUser", "player");
-    })
-  </script>
   <script src="public/js/levels.js" type="text/javascript" charset="utf-8"></script>
-  <script src="public/js/restaurant.js" type="text/javascript" charset="utf-8"></script>
+  <script src="public/js/common.js" type="text/javascript" charset="utf-8"></script>
+  <script src="public/js/player.js" type="text/javascript" charset="utf-8"></script>
   <script src="public/js/jquery.mCustomScrollbar.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
 
@@ -28,10 +24,17 @@
 </head>
 
 <body>
+<!--<div class="view start-view">-->
+<!--  <p>Enter game code:</p>-->
+<!--  <input class="view-input" type="text" placeholder="name">-->
+<!--  <button class="btn submit-code">Submit</button>-->
+<!--</div>-->
 <div class="view auth-view">
-  <p>Enter your name:</p>
-  <input id="member-name" class="member-name" type="text" placeholder="name">
-  <button class="btn submit">Submit</button>
+  <div>
+    <p>Enter your name:</p>
+    <input class="view-input member-name" type="text" placeholder="name">
+    <button class="btn submit-login">Submit</button>
+  </div>
 </div>
 <div class="view player-wait-view">
   <p>Waiting for other players to join...</p>
@@ -40,7 +43,7 @@
 <div class="view player-game-view">
   <div class="left-col">
     <h2 class="order"></h2>
-    <a class="note-toggle" href="#">Help, I'm stuck!</a>
+    <a class="note-toggle disabled">Help, I'm stuck!</a>
     <div class="note">
       <div class="display-help">
         <h3 class="selector-name"></h3>
@@ -50,7 +53,7 @@
         <h4 class="examples-title">Examples</h4>
         <div class="examples"></div>
       </div>
-      <a class="note-toggle" href="#">Ok, got it!</a>
+      <a class="note-toggle">Ok, got it!</a>
     </div>
 
     <div class="game-wrapper">
@@ -104,7 +107,6 @@
   <div class="right-col menu-open">
     <h1 class="level-header">
       <span class="level-text"></span>
-      <span class="checkmark"></span>
     </h1>
     <div class="level-menu">
       <div class="level-progress">

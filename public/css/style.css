@@ -305,7 +305,7 @@ input {
   margin: 0 auto;
 }
 
-.member-name {
+.view-input {
   width: 150px;
   height: 35px;
   padding: 5px;
@@ -1101,15 +1101,22 @@ plate orange:nth-last-child(4)
 }
 
 .note-toggle {
-  background: rgba(0,0,0,.2);
+  background: rgba(77, 245, 65, 0.3);
   color: rgba(255,255,255,.3);
   padding: 8px 15px 10px 15px;
   -webkit-border-radius: 20px;
   text-decoration: none;
   display: inline-block;
+  cursor: pointer;
 }
 
-.note-toggle:hover {
+.note-toggle.disabled {
+  background: rgba(0,0,0,.2);
+  color: rgba(255,255,255,.3);
+  cursor: not-allowed;
+}
+
+.note-toggle:not(.disabled):hover {
   text-decoration: underline;
   color: rgba(255,255,255,.4);
 }
@@ -1325,14 +1332,15 @@ tag:after {
   background: rgba(255,255,255,.05);
 }
 
+/*.create-game {*/
+/*  margin: auto;*/
+/*}*/
+
 .view {
   height: 100vh;
   display: flex;
   flex-direction: column;
-}
-
-.d-none {
-  display: none;
+  justify-content: center;
 }
 
 .leaderboard {
@@ -1354,3 +1362,6 @@ tag:after {
   color: rgba(77, 245, 65,.2);
 }
 
+.d-none {
+  display: none;
+}

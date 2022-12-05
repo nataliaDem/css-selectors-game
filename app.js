@@ -54,6 +54,7 @@ router.get('/leaderboard', async function (req, res) {
 router.post('/start-game', async function(req, res) {
   const game_code = req.query.code;
   startGame(game_code);
+  res.end("Started");
 });
 
 router.get('/check-game-started', async function(req, res) {

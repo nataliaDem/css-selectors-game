@@ -102,7 +102,7 @@ function login() {
   console.log(gameCode);
   const name = $('.member-name').val();
   console.log(name);
-  axios.post(`${baseUrl}/auth?code=${gameCode}`, {name: name})
+  axios.post(`${baseUrl}/api/auth?code=${gameCode}`, {name: name})
     .then(res => {
       console.log(res.data);
       localStorage.setItem("userIsLogged", true);
@@ -117,7 +117,7 @@ function login() {
 function updateProgress(level, timestamp) {
   const gameCode = localStorage.getItem("gameCode");
   const userId = localStorage.getItem("userId")
-  axios.post(`${baseUrl}/update-progress?code=${gameCode}`, {
+  axios.post(`${baseUrl}/api/update-progress?code=${gameCode}`, {
     id: userId,
     level: level + 1,
     lastAnswerTime: timestamp

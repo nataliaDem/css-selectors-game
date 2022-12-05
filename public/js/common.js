@@ -82,12 +82,12 @@ $(document).ready(function () {
 });
 
 async function getGameStatus(gameCode) {
-  return axios.get(`${baseUrl}/check-game-status?code=${gameCode}`);
+  return axios.get(`${baseUrl}/api/check-game-status?code=${gameCode}`);
 }
 
 function showLeaderBoard() {
   const gameCode = localStorage.getItem("gameCode");
-  axios.get(`${baseUrl}/leaderboard?code=${gameCode}`)
+  axios.get(`${baseUrl}/api/leaderboard?code=${gameCode}`)
     .then(res => {
       console.log(res.data);
       $('.leaderboard').empty();

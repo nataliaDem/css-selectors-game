@@ -46,7 +46,7 @@ function showGameViewForAdmin(code) {
 }
 
 function createNewGame() {
-  axios.get(`${baseUrl}/create-game`)
+  axios.get(`${baseUrl}/api/create-game`)
     .then(res => {
       showGameViewForAdmin(res.data);
       $('.start-game').removeClass('d-none');
@@ -58,7 +58,7 @@ function createNewGame() {
 
 function startGameByAdmin() {
   const gameCode = localStorage.getItem("gameCode");
-  axios.post(`${baseUrl}/start-game?code=${gameCode}`)
+  axios.post(`${baseUrl}/api/start-game?code=${gameCode}`)
     .then(res => {
       $('.start-game').addClass('d-none');
       $('.wait-view p').text('Leaderboard:');

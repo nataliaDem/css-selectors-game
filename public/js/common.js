@@ -15,7 +15,9 @@ const urlParams = new URLSearchParams(window.location.search);
 const gameCode = urlParams.get("code") || localStorage.getItem("gameCode") || null;
 localStorage.setItem("gameCode", gameCode);
 let progress = JSON.parse(localStorage.getItem("progress")) || blankProgress;
-setCodeToUrlParams(gameCode);
+if (gameCode) {
+  setCodeToUrlParams(gameCode);
+}
 
 $(document).ready(function () {
 
@@ -33,7 +35,6 @@ $(document).ready(function () {
 
   $(".reset-progress").on("click", function () {
     resetProgress();
-    return false;
   });
 
   $(".editor").on("click", function () {
@@ -80,6 +81,10 @@ $(document).ready(function () {
 
 });
 
+async function getGameStatus(gameCode) {
+  return axios.get(`${baseUrl}/check-game-status?code=${gameCode}`);
+}
+
 function showLeaderBoard() {
   const gameCode = localStorage.getItem("gameCode");
   axios.get(`${baseUrl}/leaderboard?code=${gameCode}`)
@@ -88,12 +93,28 @@ function showLeaderBoard() {
       $('.leaderboard').empty();
       for (let member of res.data) {
         const item = document.createElement("div");
-        $(item).html("<span class='member-score'>" + member.progress + "</span>" +
-          "<span class='member-name'>" + member.name + "</span>" +
-          "<span class='time'>" + member.lastAnswerTime + "</span>");
+        $(item).html("<div><span class='member-score'>" + member.progress + "</span>" +
+          "<span class='member-name'>" + member.name + "</span></div>" +
+          "<div class='time'>" + formatTime(member.lastAnswerTime) + "</div>");
         $(".leaderboard").append(item);
       }
     });
+}
+
+function padTo2Digits(num) {
+  return num.toString().padStart(2, '0');
+}
+
+function formatTime(timestamp) {
+  if (!timestamp) {
+    return "";
+  }
+  const date = new Date(timestamp)
+  return [
+    padTo2Digits(date.getHours()),
+      padTo2Digits(date.getMinutes()),
+      padTo2Digits(date.getSeconds()),
+    ].join(':')
 }
 
 function resetProgress() {

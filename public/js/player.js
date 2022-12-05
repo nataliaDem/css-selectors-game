@@ -12,6 +12,14 @@ $(document).ready(function () {
     }
   });
 
+  $(".member-name").on("keypress", function (e) {
+    e.stopPropagation();
+    if (e.keyCode === 13) {
+      login();
+      return false;
+    }
+  });
+
   $(".editor-pane input").on("keyup", function (e) {
     e.stopPropagation();
     var length = $(this).val().length;
@@ -31,7 +39,7 @@ $(document).ready(function () {
   });
 
   if (Number(localStorage.getItem("gameCode"))) {
-    if (localStorage.getItem("gameStatus") === "active") {
+    if (localStorage.getItem("gameStatus") === STATUSES.ACTIVE) {
       showGameViewForPlayer();
     } else if (localStorage.getItem("userIsLogged")) {
       showWaitViewForPlayer();
@@ -42,35 +50,48 @@ $(document).ready(function () {
       showAuthViewForPlayer();
     }
   } else {
-    // showGameCodeEnter();
+    showGameCodeView();
   }
+
+  $(".reset-progress").on("click", function () {
+    showGameCodeView();
+  });
 
 });
 
 function showAuthViewForPlayer() {
-  $(".player-game-view, .player-wait-view").addClass('d-none');
+  $(".player-game-view, .player-wait-view, .player-start-view").addClass('d-none');
   $(".auth-view").removeClass('d-none');
 }
 
 function showWaitViewForPlayer() {
-  $(".auth-view, .player-game-view").addClass('d-none');
+  $(".auth-view, .player-game-view, .player-start-view").addClass('d-none');
   $(".player-wait-view").removeClass('d-none');
 }
 
 function showGameViewForPlayer() {
-  $(".auth-view, .player-wait-view").addClass('d-none');
+  $(".auth-view, .player-wait-view, .player-start-view").addClass('d-none');
   $(".player-game-view").removeClass('d-none');
   loadLevel();
 }
 
+function showGameCodeView() {
+  $(".player-game-view, .player-wait-view").addClass('d-none');
+  $(".player-start-view").removeClass('d-none');
+}
+
+function enterGameCode() {
+
+}
+
 function startGameForPlayer() {
   const gameCode = localStorage.getItem("gameCode");
-  axios.get(`${baseUrl}/check-game-started?code=${gameCode}`)
+  getGameStatus(gameCode)
     .then(res => {
       console.log(res.data);
-      if (res.data) {
+      if (res.data === STATUSES.ACTIVE) {
         showGameViewForPlayer();
-        localStorage.setItem("gameStatus", "active");
+        localStorage.setItem("gameStatus", STATUSES.ACTIVE);
         clearInterval(checkGameStarted);
       }
     });

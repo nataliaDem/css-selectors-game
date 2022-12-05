@@ -3,7 +3,7 @@
 <head>
   <title>CSS Selectors game</title>
   <script src="public/js/jquery.js" type="text/javascript" charset="utf-8"></script>
-  <script src="public/js/levels.js" type="text/javascript" charset="utf-8"></script>
+  <script src="public/js/constants.js" type="text/javascript" charset="utf-8"></script>
   <script src="public/js/common.js" type="text/javascript" charset="utf-8"></script>
   <script src="public/js/player.js" type="text/javascript" charset="utf-8"></script>
   <script src="public/js/jquery.mCustomScrollbar.min.js"></script>
@@ -24,11 +24,9 @@
 </head>
 
 <body>
-<!--<div class="view start-view">-->
-<!--  <p>Enter game code:</p>-->
-<!--  <input class="view-input" type="text" placeholder="name">-->
-<!--  <button class="btn submit-code">Submit</button>-->
-<!--</div>-->
+<div class="view player-start-view">
+  <p>Open valid link with game code please :-)</p>
+</div>
 <div class="view auth-view">
   <div>
     <p>Enter your name:</p>
@@ -114,10 +112,13 @@
       </div>
     </div>
     <div class="leaderboard"></div>
-    <div>
-      <a class="btn reset-progress" href="#">Reset</a>
-    </div>
+<!--    <div>-->
+<!--      <a class="btn reset-progress" href="#">Reset</a>-->
+<!--    </div>-->
   </div>
+</div>
+<div class="reset-wrap">
+  <a class="btn reset-progress" href="#">Start new game</a>
 </div>
 </body>
 </html>

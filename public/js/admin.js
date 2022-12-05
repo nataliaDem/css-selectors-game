@@ -19,13 +19,17 @@ $(document).ready(function () {
 
   if (Number(localStorage.getItem("gameCode"))) {
     showGameViewForAdmin(gameCode);
-    if (localStorage.getItem("gameStatus") === "active") {
+    if (localStorage.getItem("gameStatus") === STATUSES.ACTIVE) {
       $('.start-game').addClass('d-none');
       $('.wait-view p').text('Leaderboard:');
     }
   } else {
     showStartViewForAdmin();
   }
+
+  $(".reset-progress").on("click", function () {
+    showStartViewForAdmin();
+  });
 
 });
 
@@ -45,6 +49,7 @@ function createNewGame() {
   axios.get(`${baseUrl}/create-game`)
     .then(res => {
       showGameViewForAdmin(res.data);
+      $('.start-game').removeClass('d-none');
       loadLevel();
       localStorage.setItem("gameCode", res.data);
       setCodeToUrlParams(res.data);

@@ -1,3 +1,4 @@
+const {STATUSES} = require("../constants");
 const games = new Map();
 
 function _getGameInfo(code) {
@@ -12,7 +13,7 @@ function createGame() {
   const code = Math.floor(Math.random() * (999999 - 100000) + 100000).toString();
   if (!games.has(code)) {
     const gameInfo = {
-      status: "new",
+      status: STATUSES.CREATED,
       players: new Map()
     }
     games.set(code, gameInfo);
@@ -36,15 +37,12 @@ function updateProgress(details, code) {
 }
 
 function startGame(code) {
-  _getGameInfo(code).status = "started";
+  _getGameInfo(code).status = STATUSES.ACTIVE;
+  return STATUSES.ACTIVE;
 }
 
-function isGameStarted(code) {
-  if ( _getGameInfo(code)) {
-    return _getGameInfo(code).status === "started";
-  } else {
-    return false;
-  }
+function getGameStatus(code) {
+  return _getGameInfo(code).status || STATUSES.NOT_FOUND;
 }
 
 function getLeaderboard(code) {
@@ -69,5 +67,5 @@ module.exports = {
   addUser,
   createGame,
   startGame,
-  isGameStarted
+  getGameStatus
 }

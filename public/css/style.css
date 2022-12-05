@@ -1348,18 +1348,42 @@ tag:after {
   height: 100%;
 }
 
-.leaderboard div {
+.leaderboard > div {
   padding: 5px 0;
+  display: flex;
+  justify-content: space-between;
 }
 
 .member-score {
   color: rgba(77, 245, 65,.5);
   margin-right: 5px;
+  min-width: 25px;
+  display: inline-block;
 }
 
 .game-code {
   font-size: 3rem;
   color: rgba(77, 245, 65,.2);
+}
+
+.reset-wrap {
+  position: fixed;
+  z-index: 30;
+  bottom: 5px;
+  right: 5px;
+}
+
+.reset-progress {
+  margin: 0;
+  min-width: 50px;
+  font-size: 0.5rem;
+  padding: 0;
+  border: none;
+  color: rgba(255,255,255,.15);
+}
+
+.start-game {
+  margin-bottom: 20px;
 }
 
 .d-none {

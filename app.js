@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const router = express.Router();
-const {addUser, getLeaderboard, updateProgress, createGame, startGame, isGameStarted} = require('./modules/storage.js');
+const {addUser, getLeaderboard, updateProgress, createGame, startGame, getGameStatus} = require('./modules/storage.js');
 
 
 const app = express();
@@ -18,7 +18,7 @@ router.get('/', async function (req, res) {
 
 router.get('/create-game', async function (req, res) {
   const code = createGame();
-  res.end(code);
+  res.send(code);
 });
 
 router.get('/admin', async function (req, res) {
@@ -42,7 +42,7 @@ router.post('/update-progress', async function(req, res) {
   const completedLevel = req.body.level;
   const lastAnswerTime = req.body.lastAnswerTime
   updateProgress({userId, completedLevel, lastAnswerTime}, game_code)
-  res.end(userId.toString());
+  res.send(userId.toString());
 });
 
 router.get('/leaderboard', async function (req, res) {
@@ -53,13 +53,13 @@ router.get('/leaderboard', async function (req, res) {
 
 router.post('/start-game', async function(req, res) {
   const game_code = req.query.code;
-  startGame(game_code);
-  res.end("Started");
+  const status = startGame(game_code);
+  res.send(status);
 });
 
-router.get('/check-game-started', async function(req, res) {
+router.get('/check-game-status', async function(req, res) {
   const game_code = req.query.code;
-  res.end(isGameStarted(game_code).toString());
+  res.send(getGameStatus(game_code));
 });
 
 app.listen(port, async function () {

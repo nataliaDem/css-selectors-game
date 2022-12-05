@@ -48,11 +48,11 @@ function showGameViewForAdmin(code) {
 function createNewGame() {
   axios.get(`${baseUrl}/api/create-game`)
     .then(res => {
-      showGameViewForAdmin(res.data);
+      showGameViewForAdmin(res.data.code);
       $('.start-game').removeClass('d-none');
       loadLevel();
-      localStorage.setItem("gameCode", res.data);
-      setCodeToUrlParams(res.data);
+      localStorage.setItem("gameCode", res.data.code);
+      setCodeToUrlParams(res.data.code);
     });
 }
 
@@ -62,7 +62,7 @@ function startGameByAdmin() {
     .then(res => {
       $('.start-game').addClass('d-none');
       $('.wait-view p').text('Leaderboard:');
-      localStorage.setItem("gameStatus", "active");
+      localStorage.setItem("gameStatus", res.data.status);
     });
 }
 

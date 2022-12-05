@@ -82,7 +82,10 @@ $(document).ready(function () {
 });
 
 async function getGameStatus(gameCode) {
-  return axios.get(`${baseUrl}/api/check-game-status?code=${gameCode}`);
+  return axios.get(`${baseUrl}/api/check-game-status?code=${gameCode}`)
+    .then(res => {
+      return res.data.status;
+    });
 }
 
 function showLeaderBoard() {

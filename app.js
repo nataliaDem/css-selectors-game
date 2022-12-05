@@ -18,7 +18,7 @@ router.get('/', async function (req, res) {
 
 router.get('/api/create-game', async function (req, res) {
   const code = createGame();
-  res.send(code);
+  res.json({code: code});
 });
 
 router.get('/admin', async function (req, res) {
@@ -33,7 +33,7 @@ router.post('/api/auth', async function(req, res) {
   const user_name = req.body.name;
   const game_code = req.query.code;
   const userId = addUser(user_name, game_code);
-  res.end(userId.toString());
+  res.json({userId: userId});
 });
 
 router.post('/api/update-progress', async function(req, res) {
@@ -42,7 +42,7 @@ router.post('/api/update-progress', async function(req, res) {
   const completedLevel = req.body.level;
   const lastAnswerTime = req.body.lastAnswerTime
   updateProgress({userId, completedLevel, lastAnswerTime}, game_code)
-  res.send(userId.toString());
+  res.json({userId: userId});
 });
 
 router.get('/api/leaderboard', async function (req, res) {
@@ -54,12 +54,13 @@ router.get('/api/leaderboard', async function (req, res) {
 router.post('/api/start-game', async function(req, res) {
   const game_code = req.query.code;
   const status = startGame(game_code);
-  res.send(status);
+  res.json({status: status});
 });
 
 router.get('/api/check-game-status', async function(req, res) {
   const game_code = req.query.code;
-  res.send(getGameStatus(game_code));
+  const status = getGameStatus(game_code)
+  res.json({status: status});
 });
 
 app.listen(port, async function () {

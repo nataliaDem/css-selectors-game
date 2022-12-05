@@ -80,16 +80,12 @@ function showGameCodeView() {
   $(".player-start-view").removeClass('d-none');
 }
 
-function enterGameCode() {
-
-}
-
 function startGameForPlayer() {
   const gameCode = localStorage.getItem("gameCode");
   getGameStatus(gameCode)
     .then(res => {
       console.log(res.data);
-      if (res.data === STATUSES.ACTIVE) {
+      if (res === STATUSES.ACTIVE) {
         showGameViewForPlayer();
         localStorage.setItem("gameStatus", STATUSES.ACTIVE);
         clearInterval(checkGameStarted);
@@ -106,7 +102,7 @@ function login() {
     .then(res => {
       console.log(res.data);
       localStorage.setItem("userIsLogged", true);
-      localStorage.setItem("userId", res.data);
+      localStorage.setItem("userId", res.data.userId);
       showWaitViewForPlayer();
       checkGameStarted = setInterval(function() {
         startGameForPlayer()

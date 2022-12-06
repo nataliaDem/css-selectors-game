@@ -84,7 +84,7 @@ function startGameForPlayer() {
   const gameCode = localStorage.getItem("gameCode");
   getGameStatus(gameCode)
     .then(res => {
-      console.log(res.data);
+      console.log(res);
       if (res === STATUSES.ACTIVE) {
         showGameViewForPlayer();
         localStorage.setItem("gameStatus", STATUSES.ACTIVE);

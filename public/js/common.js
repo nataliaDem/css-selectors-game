@@ -13,9 +13,9 @@ var blankProgress = {
 
 const urlParams = new URLSearchParams(window.location.search);
 const gameCode = urlParams.get("code") || localStorage.getItem("gameCode") || null;
-localStorage.setItem("gameCode", gameCode);
 let progress = JSON.parse(localStorage.getItem("progress")) || blankProgress;
 if (gameCode) {
+  localStorage.setItem("gameCode", gameCode);
   setCodeToUrlParams(gameCode);
 }
 
@@ -90,18 +90,20 @@ async function getGameStatus(gameCode) {
 
 function showLeaderBoard() {
   const gameCode = localStorage.getItem("gameCode");
-  axios.get(`${baseUrl}/api/leaderboard?code=${gameCode}`)
-    .then(res => {
-      console.log(res.data);
-      $('.leaderboard').empty();
-      for (let member of res.data) {
-        const item = document.createElement("div");
-        $(item).html("<div><span class='member-score'>" + member.progress + "</span>" +
-          "<span class='member-name'>" + member.name + "</span></div>" +
-          "<div class='time'>" + formatTime(member.lastAnswerTime) + "</div>");
-        $(".leaderboard").append(item);
-      }
-    });
+  if (gameCode) {
+    axios.get(`${baseUrl}/api/leaderboard?code=${gameCode}`)
+      .then(res => {
+        console.log(res.data);
+        $('.leaderboard').empty();
+        for (let member of res.data) {
+          const item = document.createElement("div");
+          $(item).html("<div><span class='member-score'>" + member.progress + "</span>" +
+            "<span class='member-name'>" + member.name + "</span></div>" +
+            "<div class='time'>" + formatTime(member.lastAnswerTime) + "</div>");
+          $(".leaderboard").append(item);
+        }
+      });
+  }
 }
 
 function padTo2Digits(num) {

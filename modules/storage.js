@@ -42,7 +42,11 @@ function startGame(code) {
 }
 
 function getGameStatus(code) {
-  return _getGameInfo(code).status || STATUSES.NOT_FOUND;
+  if(_getGameInfo(code)) {
+    return _getGameInfo(code).status
+  } else {
+    return STATUSES.NOT_FOUND;
+  }
 }
 
 function getLeaderboard(code) {

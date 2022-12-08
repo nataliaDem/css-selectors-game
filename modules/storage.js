@@ -23,7 +23,7 @@ function createGame() {
 
 function addUser(user_name, code) {
   const index = _getGameInfo(code).players.size;
-  _getGameInfo(code).players.set(index, {name: user_name, progress: 0, lastAnswerTime: 0});
+  _getGameInfo(code).players.set(index, {id: index, name: user_name, progress: 0, lastAnswerTime: 0});
   return index;
 }
 

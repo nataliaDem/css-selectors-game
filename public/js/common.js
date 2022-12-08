@@ -90,16 +90,27 @@ async function getGameStatus(gameCode) {
 
 function showLeaderBoard() {
   const gameCode = localStorage.getItem("gameCode");
+  const userId = localStorage.getItem("userId");
   if (gameCode) {
     axios.get(`${baseUrl}/api/leaderboard?code=${gameCode}`)
       .then(res => {
         console.log(res.data);
         $('.leaderboard').empty();
-        for (let member of res.data) {
+        for (let [i, member] of res.data.entries()) {
           const item = document.createElement("div");
-          $(item).html("<div><span class='member-score'>" + member.progress + "</span>" +
-            "<span class='member-name'>" + member.name + "</span></div>" +
-            "<div class='time'>" + formatTime(member.lastAnswerTime) + "</div>");
+          if (i === 0) {
+            $(item).addClass('leader');
+          }
+          if (i === 1) {
+            $(item).addClass('second');
+          }
+          if (i === 2) {
+            $(item).addClass('third');
+          }
+          $(item).html("<div><span class='member-rank'>" + (i + 1) + "</span>" +
+            "<span class='member-name'>" + (userId && member.id === Number(userId) ? "> " : "") + member.name + "</span></div>" +
+            "<div class='time'>" + formatTime(member.lastAnswerTime) +
+            "<span class='member-score'>" + member.progress + "</span></div>");
           $(".leaderboard").append(item);
         }
       });

@@ -1352,13 +1352,50 @@ tag:after {
   padding: 5px 0;
   display: flex;
   justify-content: space-between;
+  margin-bottom: 5px;
+  /*font-weight: lighter;*/
 }
 
-.member-score {
+.leaderboard .time {
+  color: rgba(119, 119, 119,.3);
+}
+
+.leaderboard > div.leader {
+  font-size: 1.45em;
+}
+
+.leaderboard > div.leader .member-rank  {
   color: rgba(77, 245, 65,.5);
+}
+
+.leaderboard > div.second {
+  font-size: 1.3em;
+}
+
+.leaderboard > div.second .member-rank  {
+  color: rgba(65, 212, 245, 0.5);
+}
+
+.leaderboard > div.third {
+  font-size: 1.2em;
+}
+
+.leaderboard > div.third .member-rank  {
+  color: rgba(245, 209, 65, 0.5);
+}
+
+.member-rank {
+  /*color: rgba(77, 245, 65,.5);*/
   margin-right: 5px;
   min-width: 25px;
   display: inline-block;
+}
+
+.member-score {
+  margin-left: 20px;
+  min-width: 25px;
+  display: inline-block;
+  color: #777;
 }
 
 .game-code {

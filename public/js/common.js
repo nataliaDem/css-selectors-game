@@ -1,7 +1,9 @@
 let level;
 let finished = false;
 const intervalTimeout = 1000;
-const baseUrl = window.location.origin;
+const urlMatch = window.location.pathname.match(/\/(.*?)\//);
+const hostingDirectory = urlMatch ? "/" + urlMatch[1] : "";
+const baseUrl = window.location.origin + hostingDirectory;
 const showHelpTimeout = 3000;
 
 var blankProgress = {

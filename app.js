@@ -1,11 +1,12 @@
 const express = require('express');
 const path = require('path');
-const router = express.Router();
+const dotenv = require('dotenv');
+dotenv.config();
 const {addUser, getLeaderboard, updateProgress, createGame, startGame, getGameStatus} = require('./modules/storage.js');
 
 const app = express();
-const port = 3000;
-app.use("/", router);
+const router = express.Router();
+const port = process.env.PORT || 3000;
 
 router.use(express.json({type: '*/*'}));
 router.use('/public', express.static(path.join(__dirname, 'public')));
@@ -86,6 +87,8 @@ router.get('/api/check-game-status', async function(req, res, next) {
 });
 
 router.use(errorHandler);
+
+app.use(`/${process.env.URL_PATH}`, router);
 
 app.listen(port, async function () {
   console.log(`I'm started on port ${port}!`);

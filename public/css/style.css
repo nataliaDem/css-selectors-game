@@ -1100,6 +1100,10 @@ plate orange:nth-last-child(4)
   background: rgba(27,111,155,.15);
 }
 
+.header-hint {
+  font-weight: bold;
+}
+
 .note-toggle {
   background: rgba(77, 245, 65, 0.3);
   color: rgba(255,255,255,.3);
@@ -1108,6 +1112,7 @@ plate orange:nth-last-child(4)
   text-decoration: none;
   display: inline-block;
   cursor: pointer;
+  margin-top: 10px;
 }
 
 .note-toggle.disabled {

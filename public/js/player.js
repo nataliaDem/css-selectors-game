@@ -1,6 +1,7 @@
 let currentLevel = parseInt(localStorage.currentLevel, 10) || 0;
 const levelTimeout = 1000;
 let checkGameStarted;
+levels = levels.slice(1,levels.length-1);
 
 $(document).ready(function () {
 

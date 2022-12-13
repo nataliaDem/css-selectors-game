@@ -4,7 +4,7 @@ const intervalTimeout = 1000;
 const urlMatch = window.location.pathname.match(/\/(.*?)\//);
 const hostingDirectory = urlMatch ? "/" + urlMatch[1] : "";
 const baseUrl = window.location.origin + hostingDirectory;
-const showHelpTimeout = 3000;
+const showHelpTimeout = 10000;
 
 var blankProgress = {
   totalCorrect: 0,
@@ -343,12 +343,15 @@ function loadLevel() {
   hideTooltip();
 
   $('.note-toggle').addClass('disabled');
+  $('.note').hide();
   setTimeout(function () {
     $('.note-toggle').removeClass('disabled');
     showHelp();
   }, showHelpTimeout);
 
   level = levels[currentLevel];
+  const helpTitle = level.syntax || "";
+  $(".header-hint").html(helpTitle);
 
   $(".level-menu .current").removeClass("current");
   $(".level-menu div a").eq(currentLevel).addClass("current");

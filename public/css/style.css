@@ -1351,6 +1351,7 @@ tag:after {
 .leaderboard {
   padding: 20px;
   height: 100%;
+  overflow-y: scroll;
 }
 
 .leaderboard > div {

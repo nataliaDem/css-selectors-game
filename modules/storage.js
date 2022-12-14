@@ -53,6 +53,9 @@ function getLeaderboard(code) {
   if (_getGameInfo(code)) {
     const users = [..._getGameInfo(code).players.values()];
     const leaderboard = users.sort((a,b) => {
+      if (a.lastAnswerTime === b.lastAnswerTime && a.lastAnswerTime === 0) {
+        return a.id - b.id;
+      }
       if (b.progress === a.progress) {
         return a.lastAnswerTime - b.lastAnswerTime;
       } else {

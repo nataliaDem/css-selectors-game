@@ -24,7 +24,7 @@ if (gameCode) {
 $(document).ready(function () {
 
   // Custom scrollbar plugin
-  $(".left-col, .level-menu, .leaderboard").mCustomScrollbar({
+  $(".left-col, .level-menu").mCustomScrollbar({
     scrollInertia: 0,
     autoHideScrollbar: true
   });

@@ -146,7 +146,7 @@ function resetProgress() {
   localStorage.removeItem("userIsLogged");
   finished = false;
   urlParams.delete("code");
-  history.replaceState(null, null, "?"+urlParams.toString());
+  history.replaceState(null, null, window.location.origin+window.location.pathname);
 
   $(".completed").removeClass("completed");
   loadLevel();
@@ -392,6 +392,6 @@ function loadLevel() {
 function setCodeToUrlParams(gameCode) {
   if (gameCode) {
     urlParams.set("code", gameCode);
-    history.replaceState(null, null, "?"+urlParams.toString());
+    history.replaceState(null, null, window.location.origin+window.location.pathname+"?"+urlParams.toString());
   }
 }

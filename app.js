@@ -7,6 +7,7 @@ const {addUser, getLeaderboard, updateProgress, createGame, startGame, getGameSt
 const app = express();
 const router = express.Router();
 const port = process.env.PORT || 3000;
+const hostingDirectory = process.env.URL_PATH || "";
 
 router.use(express.json({type: '*/*'}));
 router.use('/public', express.static(path.join(__dirname, 'public')));
@@ -88,10 +89,10 @@ router.get('/api/check-game-status', async function(req, res, next) {
 
 router.use(errorHandler);
 
-app.use(`/${process.env.URL_PATH}`, router);
+app.use(`/${hostingDirectory}`, router);
 
 app.listen(port, async function () {
-  console.log(`I'm started on port ${port}!`);
+  console.log(`I'm started on port ${port} ${hostingDirectory ? `in the ${hostingDirectory} directory` : "in the root directory"}!`);
 });
 
 function errorHandler (err, req, res, next) {

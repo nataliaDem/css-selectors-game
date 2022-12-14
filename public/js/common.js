@@ -350,8 +350,13 @@ function loadLevel() {
   }, showHelpTimeout);
 
   level = levels[currentLevel];
-  const helpTitle = level.syntax || "";
-  $(".header-hint").html(helpTitle);
+  const helpTitle = level.helpSyntax || "";
+  if (helpTitle) {
+    $(".header-hint").html("Using <span class='header-hint'>"+ helpTitle +"</span> syntax");
+  } else {
+    $(".header-hint").empty();
+  }
+
 
   $(".level-menu .current").removeClass("current");
   $(".level-menu div a").eq(currentLevel).addClass("current");

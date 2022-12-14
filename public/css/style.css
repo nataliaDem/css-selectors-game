@@ -1100,7 +1100,7 @@ plate orange:nth-last-child(4)
   background: rgba(27,111,155,.15);
 }
 
-.header-hint {
+.header-hint span {
   font-weight: bold;
 }
 
@@ -1426,6 +1426,10 @@ tag:after {
 
 .start-game {
   margin-bottom: 20px;
+}
+
+.game-code, .game-link {
+  cursor: copy;
 }
 
 .d-none {

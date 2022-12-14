@@ -12,6 +12,7 @@ let levels = [
     doThis: "Select the plates",
     selector: "plate",
     syntax: "tag",
+    helpSyntax: "",
     help: "Selects all elements of type <strong>A</strong>. Type refers to the type of tag, so <tag>div</tag>, <tag>p</tag> and <tag>ul</tag> are all different element types.",
     examples: [
       '<strong>div</strong> selects all <tag>div</tag> elements.',
@@ -45,6 +46,7 @@ let levels = [
     selectorName: "ID Selector",
     helpTitle: "Select elements with an ID",
     syntax: "#id",
+    helpSyntax: "",
     help: 'Selects the element with a specific <strong>id</strong>. You can also combine the ID selector with the type selector.',
     examples: [
       '<strong>#cool</strong> selects any element with <strong>id="cool"</strong>',
@@ -80,6 +82,7 @@ let levels = [
     selector: "#fancy pickle",
     helpTitle: "Combine the Descendant & ID Selectors",
     syntax: "#id&nbsp;&nbsp;tag",
+    helpSyntax: "",
     help: 'You can combine any selector with the descendent selector.',
     examples: [
       '<strong>#cool&nbsp;span</strong> selects all <tag>span</tag> elements that are inside of elements with <strong>id="cool"</strong>'
@@ -142,6 +145,7 @@ let levels = [
     doThis: "Select the small oranges in the bentos",
     selector: "bento orange.small",
     syntax: "combine selectors",
+    helpSyntax: "",
     helpTitle: "You can do it...",
     help: 'Combine what you learned in the last few levels to solve this one!',
     boardMarkup: `
@@ -213,6 +217,7 @@ let levels = [
     doThis: "Select everything on a plate",
     selector: "plate *",
     syntax: "tag&nbsp;&nbsp;*",
+    helpSyntax: "",
     helpTitle: "Combine the Universal Selector",
     help: 'This selects all elements inside of <strong>A</strong>.',
     examples: [
@@ -237,6 +242,7 @@ let levels = [
     helpTitle: "Select an element that directly follows another element",
     selectorName: "Adjacent Sibling Selector",
     syntax: "tagA + tagB",
+    helpSyntax: "",
     help: "This selects all <strong>B</strong> elements that directly follow <strong>A</strong>. Elements that follow one another are called siblings. They're on the same level, or depth. <br/><br/>In the HTML markup for this level, elements that have the same indentation are siblings.",
     examples: [
       '<strong>p + .intro</strong> selects every element with <strong>class="intro"</strong> that directly follows a <tag>p</tag>',
@@ -258,6 +264,7 @@ let levels = [
     selectorName: "General Sibling Selector",
     helpTitle: "Select elements that follows another element",
     syntax: "tagA ~ tagB",
+    helpSyntax: "",
     doThis: "Select the pickles beside the bento",
     selector: "bento ~ pickle",
     help: "You can select all siblings of an element that follow it. This is like the Adjacent Selector (A + B) except it gets all of the following elements instead of one.",
@@ -282,6 +289,7 @@ let levels = [
   {
     selectorName: "Child Selector",
     syntax: "tagA > tagB&nbsp;",
+    helpSyntax: "",
     doThis: "Select the apple directly on a plate",
     selector: "plate > apple",
     helpTitle: "Select direct children of an element",
@@ -309,7 +317,7 @@ let levels = [
     doThis: "Select the top orange",
     selector: "plate :first-child",
     syntax: ":first-child",
-
+    helpSyntax: "",
     help: "You can select the first child element. A child element is any element that is directly nested in another element. You can combine this pseudo-selector with other selectors.",
     examples: [
       '<strong>:first-child</strong> selects all first child elements.',
@@ -333,6 +341,7 @@ let levels = [
     doThis: "Select the apple and the pickle on the plates",
     selector: "plate :only-child",
     syntax: ":only-child",
+    helpSyntax: "only-child",
     help: "You can select any element that is the only element inside of another one.",
     examples: [
       '<strong>span:only-child</strong> selects the <tag>span</tag> elements that are the only child of some other element.',
@@ -402,6 +411,7 @@ let levels = [
     doThis: "Select the 1st bento",
     selector: "bento:nth-last-child(3)",
     syntax: ":nth-last-child(n)",
+    helpSyntax: "nth-last-child(n)",
     help: "Selects the children from the bottom of the parent. This is like nth-child, but counting from the back!",
     examples: [
       '<strong>:nth-last-child(2)</strong> selects all second-to-last child elements.'
@@ -463,6 +473,7 @@ let levels = [
     doThis: "Select every 2nd plate, starting from the 3rd",
     selector: "plate:nth-of-type(2n+3)",
     syntax: ":nth-of-type(An+B)",
+    helpSyntax: "nth-of-type",
     help: "The nth-of-type formula selects every nth element, starting the count at a specific instance of that element.",
     examples: [
       '<strong>span:nth-of-type(6n+2)</strong> selects every 6th instance of a <tag>span</tag>, starting from (and including) the second instance.'
@@ -487,6 +498,7 @@ let levels = [
     helpTitle: "Select elements that are the only ones of their type within their parent element",
     selector: "apple:only-of-type",
     syntax: ":only-of-type",
+    helpSyntax: "only-of-type",
     doThis: "Select the apple on the middle plate",
     help: "Selects the only element of its type within another element.",
     examples: [
@@ -531,6 +543,7 @@ let levels = [
     doThis: "Select the empty bentos",
     selector: "bento:empty",
     syntax: ":empty",
+    helpSyntax: "",
     help: "Selects elements that don't have any other elements inside of them.",
     examples: [
       '<strong>div:empty</strong> selects all empty <tag>div</tag> elements.'
@@ -549,6 +562,7 @@ let levels = [
     doThis: "Select the big apples",
     selector: "apple:not(.small)",
     syntax: ":not(X)",
+    helpSyntax: ":not",
     help: 'You can use this to select all elements that do not match selector <strong>"X"</strong>.',
     examples: [
       '<strong>:not(#fancy)</strong> selects all elements that do not have <strong>id="fancy"</strong>.',
@@ -629,6 +643,7 @@ let levels = [
     doThis: "Select the items for names that start with 'Sa'",
     selector: '[for^="Sa"]',
     syntax: '[attribute^="value"]',
+    helpSyntax: "",
     // help : "You can use quotes around the value in the selector, or not&mdash;it's optional!",
     examples: [
       '<strong>.toy[category^="Swim"]</strong> selects elements with class <strong>toy</strong> and either <strong>category="Swimwear"</strong> or <strong>category="Swimming"</strong>.'
@@ -645,6 +660,7 @@ let levels = [
     doThis: "Select the items for names that end with 'ato'",
     selector: '[for$="ato"]',
     syntax: '[attribute$="value"]',
+    helpSyntax: "",
     help: '',
     examples: [
       '<strong>img[src$=".jpg"]</strong> selects all images display a <strong>.jpg</strong> image.',
@@ -661,6 +677,7 @@ let levels = [
     selectorName: "Attribute Wildcard Selector",
     helpTitle: "Select all elements with an attribute value that contains specific characters anywhere",
     syntax: '[attribute*="value"]',
+    helpSyntax: "",
     doThis: "Select the meals for names that contain 'obb'",
     selector: '[for*="obb"]',
     help: 'A useful selector if you can identify a common pattern in things like <strong>class</strong>, <strong>href</strong> or <strong>src</strong> attributes.',

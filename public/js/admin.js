@@ -1,9 +1,20 @@
 let currentLevel = 0;
-levels = levels.slice(0,1);
 
 localStorage.setItem("userRole", "admin");
 
 $(document).ready(function () {
+
+  $(".editor-pane input").on("keypress", function (e) {
+    e.stopPropagation();
+    if (e.keyCode === 13) {
+      goToLevel();
+      return false;
+    }
+  });
+
+  $(".enter-button").on("click", function () {
+    goToLevel();
+  });
 
   $(".game-code, .game-link").on("click", function () {
     copyGameUrlToClipboard();
@@ -69,4 +80,12 @@ function startGameByAdmin() {
 function copyGameUrlToClipboard() {
   const copyText = $('.game-link').text();
   navigator.clipboard.writeText(copyText);
+}
+
+function goToLevel() {
+  const text = $(".editor-pane input").val();
+  if (parseInt(text, 10) > 0 && parseInt(text, 10) < levels.length + 1) {
+    currentLevel = parseInt(text, 10) - 1;
+    loadLevel();
+  }
 }

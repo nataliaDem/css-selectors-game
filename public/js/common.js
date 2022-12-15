@@ -39,7 +39,7 @@ $(document).ready(function () {
     resetProgress();
   });
 
-  $(".editor").on("click", function () {
+  $(".editor-pane").on("click", function () {
     $(".editor-pane input").focus();
   });
 

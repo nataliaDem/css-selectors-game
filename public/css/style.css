@@ -16,7 +16,7 @@ body {
   background-image: -moz-radial-gradient(20% 40%,contain circle, #3e392f, #221e17);
   background-repeat: no-repeat;
   position: relative;
-  color: rgba(255,255,255,.4);
+  color: rgba(255,255,255,.5);
   text-align: center;
 }
 
@@ -30,7 +30,7 @@ h1, h2, h3, h4, h5 {
 
 header {
   padding: 12px 15px 11px 35px;
-  color: rgba(255,255,255,.3);
+  color: rgba(255,255,255,.6);
   text-align: left;
 }
 
@@ -844,7 +844,7 @@ plate orange:nth-last-child(4)
 }
 
 .order {
-  color: rgba(255,255,255,.3);
+  color: rgba(255,255,255,.6);
   font-size: 45px;
   margin: 0;
   font-weight: 400;
@@ -1105,7 +1105,7 @@ plate orange:nth-last-child(4)
 }
 
 .note-toggle {
-  background: rgba(77, 245, 65, 0.3);
+  background: rgba(77, 245, 65, 0.15);
   color: rgba(255,255,255,.3);
   padding: 8px 15px 10px 15px;
   -webkit-border-radius: 20px;

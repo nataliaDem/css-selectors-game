@@ -133,11 +133,11 @@ function enterHit() {
 }
 
 function handleInput(text) {
-  if (parseInt(text, 10) > 0 && parseInt(text, 10) < levels.length + 1) {
-    currentLevel = parseInt(text, 10) - 1;
-    loadLevel();
-    return;
-  }
+  // if (parseInt(text, 10) > 0 && parseInt(text, 10) < levels.length + 1) {
+  //   currentLevel = parseInt(text, 10) - 1;
+  //   loadLevel();
+  //   return;
+  // }
   console.log(text)
   fireRule(text);
 }
